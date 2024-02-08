@@ -3,6 +3,12 @@ package com.ayou7995.javalearning.controller;
 import com.ayou7995.javalearning.exception.ResourceNotFoundException;
 import com.ayou7995.javalearning.model.Tutorial;
 import com.ayou7995.javalearning.repository.TutorialRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8081")
+@Tag(name = "Tutorial", description = "Tutorial management APIs")
 @RestController
 @RequestMapping("/api")
 public class TutorialController {
@@ -35,6 +42,14 @@ public class TutorialController {
         return new ResponseEntity<>(tutorials, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Retrieve a Tutorial by Id",
+            description = "Get a Tutorial object by specifying its id. The response is Tutorial object with id, title, description and published status.",
+            tags = { "tutorials", "get" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Tutorial.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
         Tutorial tutorial = tutorialRepository.findById(id)
